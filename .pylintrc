@@ -1,0 +1,14 @@
+[MASTER]
+ignore=build,dist,.venv
+jobs=0
+py-version=3.11
+load-plugins=
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116,R0903
+
+[BASIC]
+good-names=_,i,j,k,x,y,z,db,id
+
+[FORMAT]
+max-line-length=100

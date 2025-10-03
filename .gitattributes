@@ -1,0 +1,9 @@
+# Default: use LF everywhere
+* text=auto eol=lf
+
+# Windows-only batch and PowerShell scripts → CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts must stay LF
+*.sh text eol=lf
