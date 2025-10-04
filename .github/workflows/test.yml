@@ -1,0 +1,75 @@
+name: CI (lint, type, test)
+
+on:
+  push:
+    branches: [ "**" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/test.yml"
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  lint-type-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv (official)
+        run: |
+          curl -Ls https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          uv --version
+
+      # Кэш uv-кэша и .venv. Ключ — OS+Python+хэши pyproject/uv.lock
+      - name: Cache uv and venv
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            .venv
+          key: uv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+
+      - name: Create venv & sync (prod only from uv.lock)
+        run: |
+          uv venv .venv
+          uv sync
+
+      # Установим dev-зависимости. Это может обновить uv.lock в рабочем каталоге,
+      # но в CI это безвредно (файл не коммитится обратно).
+      - name: Add dev extras
+        run: |
+          uv sync --extra dev
+
+      - name: Ruff (format check + lint)
+        run: |
+          .venv/bin/ruff format --check .
+          .venv/bin/ruff check .
+
+      - name: Mypy
+        run: |
+          .venv/bin/mypy .
+
+      # Если используешь pylint — раскомментируй
+      # - name: Pylint
+      #   run: |
+      #     .venv/bin/pylint src tests
+
+      - name: Pytest
+        run: |
+          .venv/bin/pytest -q
