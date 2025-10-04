@@ -47,14 +47,13 @@ jobs:
 
       - name: Create venv & sync (prod only from uv.lock)
         run: |
-          uv venv .venv
-          uv sync
+          uv sync --frozen
 
       # Установим dev-зависимости. Это может обновить uv.lock в рабочем каталоге,
       # но в CI это безвредно (файл не коммитится обратно).
       - name: Add dev extras
         run: |
-          uv sync --extra dev
+          uv sync --frozen --extra dev
 
       - name: Ruff (format check + lint)
         run: |
