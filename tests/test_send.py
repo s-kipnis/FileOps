@@ -24,7 +24,7 @@ def test_send_json() -> None:
 
 
 def test_send_text() -> None:
-    resp = client.post("/send", data="hello", headers={"content-type": "text/plain"})
+    resp = client.post("/send", content=b"hello", headers={"content-type": "text/plain"})
     assert resp.status_code == 200
     body = resp.json()
     assert body["ok"] is True

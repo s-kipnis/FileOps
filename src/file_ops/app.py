@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ app = FastAPI(title="file_ops", version="0.1.0")
 class SendModel(BaseModel):
     # Accepts {"message": "...", "meta": {...}}; "meta" is optional
     message: str
-    meta: Optional[Dict[str, Any]] = None
+    meta: dict[str, Any] | None = None
 
 
 @app.get("/health")

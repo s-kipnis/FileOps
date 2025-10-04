@@ -15,6 +15,16 @@ dependencies = [
   "uvicorn[standard]>=0.30",
 ]
 
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "httpx",
+  "pytest-asyncio",  # optional
+  "ruff",
+  "mypy",
+  "pylint",
+]
+
 [project.urls]
 Homepage = "https://example.com"
 
@@ -52,7 +62,7 @@ exclude = "(build|dist|\\.venv)"
 [tool.pylint.main]
 py-version = "3.11"
 jobs = 0
-recursive = yes
+recursive = true
 ignore = ["build","dist",".venv"]
 load-plugins = []
 

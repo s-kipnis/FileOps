@@ -1,13 +1,10 @@
-#!/usr/bin/env pwsh
+# Requires: PowerShell 5+ / 7+, uv installed
 $ErrorActionPreference = "Stop"
 
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-  Write-Error "uv not found. Install: https://docs.astral.sh/uv/"
+    Write-Error "uv is not installed. See https://docs.astral.sh/uv/"
 }
 
-uv venv .venv
-uv pip install -U pip
-uv pip install -e .
-uv pip install -r requirements.txt
-
-Write-Host "✅ Done. Activate: .\.venv\Scripts\Activate.ps1"
+Write-Host "=> Syncing environment via uv (pyproject + uv.lock)"
+uv sync
+Write-Host "=> Done."

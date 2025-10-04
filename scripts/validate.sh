@@ -1,9 +1,11 @@
-#!/bin/bash
-curl http://127.0.0.1:8000/health
-# -> {"status":"ok"}
+#!/usr/bin/env bash
+set -euo pipefail
 
-curl -X POST http://127.0.0.1:8000/send -H "content-type: application/json" -d '{"message":"hi","meta":{"k":1}}'
-# -> {"ok": true, "echo": {"message":"hi","meta":{"k":1}}}
+# Run tests with pytest via uv.
+if ! command -v uv >/dev/null 2>&1; then
+  echo "ERROR: 'uv' is not installed."
+  exit 1
+fi
 
-curl -X POST http://127.0.0.1:8000/send -H "content-type: text/plain" --data-raw "hello"
-# -> {"ok": true, "echo": {"message":"hello"}}
+echo "=> Running tests"
+uv run pytest -q
