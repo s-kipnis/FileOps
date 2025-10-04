@@ -40,8 +40,7 @@ jobs:
 
       - name: Create venv & sync (prod only)
         run: |
-          uv venv .venv
-          uv sync
+          uv sync --frozen
 
       - name: Build (hatchling via uv)
         run: |

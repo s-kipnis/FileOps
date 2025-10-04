@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "file_ops"
-version = "0.1.0"
+version = "0.1.1"
 description = "Minimal backend skeleton: FastAPI + uv + ruff + mypy + pylint + pytest"
 readme = "README.md"
 requires-python = ">=3.11"

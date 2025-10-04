@@ -12,24 +12,27 @@ endif
 
 .PHONY: setup dev build test clean
 
+
 $(MARKER): pyproject.toml
 	@echo "⚠️  Rebuilding venv because pyproject.toml changed"
 	@rm -rf $(VENV)
 	@uv venv $(VENV)
-	@uv sync --extra dev
+	@uv sync --locked --all-extras
 	@touch $(MARKER)
 
 setup: $(MARKER)
 	@echo ".venv is up to date."
 
 build: setup
+	$(UV) sync --locked --no-dev
 	$(UV) build
 
 test: setup
+	@uv sync --frozen --all-extras
 	$(PYTEST)
 
 
-install: setup
+install: build
 	$(UV) pip install dist/*.whl
 
 clean:
