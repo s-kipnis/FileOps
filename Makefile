@@ -5,6 +5,7 @@ VENV_MARKER := $(VENV)/.timestamp
 
 ifeq ($(OS),Windows_NT)
     PYTEST := $(VENV_BIN)/pytest.exe
+    SHELL  = pwsh.exe
 else
     VENV_BIN := $(VENV)/bin
     PYTEST := $(VENV_BIN)/pytest
@@ -33,7 +34,11 @@ test: setup
 
 
 install: build
+ifeq ($(OS),Windows_NT)
+	$(UV) pip install dist/$(shell powershell -NoProfile -Command "Get-ChildItem dist/*.whl | Select-Object -ExpandProperty Name")
+else
 	$(UV) pip install dist/*.whl
+endif
 
 clean:
 	rm -rf $(VENV) dist *.egg-info .pytest_cache __pycache__ .mypy_cache
