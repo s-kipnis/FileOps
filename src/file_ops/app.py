@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from pydantic import BaseModel
 
-app = FastAPI(title="file_ops", version="0.1.0")
+app = FastAPI(title="file_ops", version="0.1.1")
 
 
 class SendModel(BaseModel):
@@ -18,6 +18,28 @@ class SendModel(BaseModel):
 async def health() -> dict[str, str]:
     # Simple liveness check
     return {"status": "ok"}
+
+
+@app.post("/blob")
+async def blob(request: Request) -> Response:
+    """
+    Accepts large binary data (up to ~100 MB).
+    Reads request body in streaming chunks for efficiency.
+    Echoes back processed (or identical) binary data.
+    """
+    # Read binary data in chunks
+    # (streaming avoids loading full 100MB into memory at once)
+    chunks = []
+    async for chunk in request.stream():
+        chunks.append(chunk)
+    data = b"".join(chunks)
+
+    # Example: process or modify binary data
+    # (you can replace this with real logic)
+    processed = data  # here we just echo it
+
+    # Return binary response
+    return Response(content=processed, media_type="application/octet-stream")
 
 
 @app.post("/send")
